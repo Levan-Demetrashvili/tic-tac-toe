@@ -51,22 +51,18 @@ body {
 /** Keyframes */
 
 .blink {
-  animation: blink 0.5s infinite;
-  animation: blink 0.2s ease-out infinite;
+  animation: blink 0.2s ease-out 4;
+  animation: blink 0.5s 4;
 }
 
 @keyframes blink {
-  25% {
-    opacity: 0.5;
+  0% {
+    background-color: cyan;
   }
-  50% {
-    opacity: 0;
-  }
-  75% {
-    opacity: 0.5;
+  100% {
+    background-color: #508abb;
   }
 }
-
 @media only screen and (max-width: 520px) {
   .game-container {
     width: 90%;
