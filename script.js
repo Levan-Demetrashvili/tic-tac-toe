@@ -3,7 +3,7 @@ const containerApp = document.querySelector('.game-container');
 const boxes = Array.from(document.querySelectorAll('.boxes'));
 const symbol = Array.from(document.querySelectorAll('.symbol'));
 // starting condition
-const coordinates = ['', '', '', '', '', '', '', '', ''];
+const coordinates = ['', '-', '', '-', '', '-', '', '-', ''];
 let timer = true;
 let xCounter = 0;
 let oCounter = 0;
@@ -20,8 +20,6 @@ let winningCombinations = [
   [2, 4, 6],
 ];
 
-let randomPos = Math.trunc(Math.random() * 9);
-coordinates[randomPos] = symbol[randomPos].textContent = 'X';
 function addClassAndWinner() {
   winner = true;
   boxes.map((_, i) => {
@@ -62,10 +60,17 @@ function resetGame() {
   }
 }
 
+let randomPos;
+do {
+  randomPos = Math.trunc(Math.random() * 9);
+} while (coordinates[randomPos] === '-');
+
+coordinates[randomPos] = symbol[randomPos].textContent = 'X';
+
 for (let i = 0; i < boxes.length; i++) {
   //* mouse down
   boxes[i].addEventListener('mousedown', function () {
-    if (coordinates[i] === '' && timer) {
+    if ((coordinates[i] === '' || coordinates[i] === '-') && timer) {
       lastClick = 'O';
       coordinates[i] = symbol[i].textContent = 'O';
     } else {
