@@ -51,6 +51,17 @@ body {
 /** Keyframes */
 
 .blink {
+  -o-animation: blink 0.2s ease-out 4;
+  -o-animation: blink 0.5s 4;
+
+  -moz-animation: blink 0.2s ease-out 4;
+  -moz-animation: blink 0.5s 4;
+
+  -ms-animation: blink 0.2s ease-out 4;
+  -ms-animation: blink 0.5s 4;
+
+  -webkit-animation: blink 0.2s ease-out 4;
+  -webkit-animation: blink 0.5s 4;
   animation: blink 0.2s ease-out 4;
   animation: blink 0.5s 4;
 }

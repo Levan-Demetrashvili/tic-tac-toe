@@ -1,10 +1,12 @@
-// Declare variables
+//^ Declare variables
 const containerApp = document.querySelector('.game-container');
 const boxes = Array.from(document.querySelectorAll('.boxes'));
 const symbol = Array.from(document.querySelectorAll('.symbol'));
-// starting condition
-const coordinates = ['', '-', '', '-', '', '-', '', '-', ''];
+//^ starting condition
+let randomPos;
+let coordinates = ['', '-', '', '-', '', '-', '', '-', ''];
 let timer = true;
+let clickCounter = 0;
 let xCounter = 0;
 let oCounter = 0;
 let lastClick;
@@ -19,6 +21,16 @@ let winningCombinations = [
   [0, 4, 8],
   [2, 4, 6],
 ];
+
+//^ Functions
+
+function calcDisplayFirstMove() {
+  do {
+    randomPos = Math.trunc(Math.random() * 9);
+  } while (coordinates[randomPos] === '-');
+
+  coordinates[randomPos] = symbol[randomPos].textContent = 'X';
+}
 
 function addClassAndWinner() {
   winner = true;
@@ -36,19 +48,14 @@ function checkWinner() {
       else if (coordinates[pos] === 'O') oCounter++;
 
       //* if winner is  add class
-      if (xCounter === 3) addClassAndWinner.call(arr);
+      if (xCounter === 3) addClassAndWinner.apply(arr);
       else if (oCounter === 3) addClassAndWinner.call(arr);
     });
   });
 }
 
 function resetGame() {
-  if (!coordinates.includes('') || winner) {
-    winner = false;
-    lastClick = '';
-    coordinates.fill('');
-    symbol.map(el => (el.textContent = ''));
-
+  if ((!coordinates.includes('') && !coordinates.includes('-')) || winner) {
     //* remove class
     winningCombinations.forEach((combination, i, arr) => {
       combination.forEach((pos, i, arr) => {
@@ -57,21 +64,26 @@ function resetGame() {
         });
       });
     });
+    winner = false;
+    clickCounter = 0;
+    lastClick = '';
+    coordinates = ['', '-', '', '-', '', '-', '', '-', ''];
+    symbol.map(el => (el.textContent = ''));
+
+    calcDisplayFirstMove();
   }
 }
 
-let randomPos;
-do {
-  randomPos = Math.trunc(Math.random() * 9);
-} while (coordinates[randomPos] === '-');
-
-coordinates[randomPos] = symbol[randomPos].textContent = 'X';
+//! End of Functions *************************************************/
+calcDisplayFirstMove();
+//* First move
 
 for (let i = 0; i < boxes.length; i++) {
   //* mouse down
   boxes[i].addEventListener('mousedown', function () {
     if ((coordinates[i] === '' || coordinates[i] === '-') && timer) {
       lastClick = 'O';
+      clickCounter++;
       coordinates[i] = symbol[i].textContent = 'O';
     } else {
       lastClick = '';
@@ -82,10 +94,16 @@ for (let i = 0; i < boxes.length; i++) {
   boxes[i].addEventListener('mouseup', function () {
     if (lastClick === 'O') {
       timer = false;
-      if (coordinates.includes('')) {
-        do {
-          randomPos = Math.trunc(Math.random() * 9);
-        } while (coordinates[randomPos] !== '');
+      if (coordinates.includes('') || coordinates.includes('-')) {
+        if (clickCounter < 3) {
+          do {
+            randomPos = Math.trunc(Math.random() * 9);
+          } while (coordinates[randomPos] === '-' || coordinates[randomPos] !== '');
+        } else {
+          do {
+            randomPos = Math.trunc(Math.random() * 9);
+          } while (coordinates[randomPos] !== '-' && coordinates[randomPos] !== '');
+        }
       }
 
       setTimeout(() => {
