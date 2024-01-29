@@ -47,6 +47,18 @@ function checkWinner() {
       if (coordinates[pos] === 'X') xCounter++;
       else if (coordinates[pos] === 'O') oCounter++;
 
+      //* if X is one way to win
+      if (xCounter === 2) {
+        coordinates.map((el, i) => {
+          if ((i === arr.at(0) || i === arr.at(1) || i === arr.at(2)) && (el === '' || el === '-')) randomPos = i;
+        });
+      }
+      if (oCounter === 2) {
+        coordinates.map((el, i) => {
+          if ((i === arr.at(0) || i === arr.at(1) || i === arr.at(2)) && (el === '' || el === '-')) randomPos = i;
+        });
+      }
+
       //* if winner is  add class
       if (xCounter === 3) addClassAndWinner.apply(arr);
       else if (oCounter === 3) addClassAndWinner.call(arr);
@@ -114,8 +126,8 @@ for (let i = 0; i < boxes.length; i++) {
         if (!winner) {
           coordinates[randomPos] = symbol[randomPos].textContent = 'X';
           checkWinner();
+          setTimeout(resetGame, 3000);
         }
-        setTimeout(resetGame, 3000);
       }, 500);
     }
   });
