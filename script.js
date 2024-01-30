@@ -48,12 +48,12 @@ function checkWinner() {
       else if (coordinates[pos] === 'O') oCounter++;
 
       //* if X is one way to win
-      if (xCounter === 2) {
+      if (oCounter === 2) {
         coordinates.map((el, i) => {
           if ((i === arr.at(0) || i === arr.at(1) || i === arr.at(2)) && (el === '' || el === '-')) randomPos = i;
         });
       }
-      if (oCounter === 2) {
+      if (xCounter === 2) {
         coordinates.map((el, i) => {
           if ((i === arr.at(0) || i === arr.at(1) || i === arr.at(2)) && (el === '' || el === '-')) randomPos = i;
         });
@@ -67,23 +67,21 @@ function checkWinner() {
 }
 
 function resetGame() {
-  if ((!coordinates.includes('') && !coordinates.includes('-')) || winner) {
-    //* remove class
-    winningCombinations.forEach((combination, i, arr) => {
-      combination.forEach((pos, i, arr) => {
-        boxes.map((_, i) => {
-          if (i === arr.at(0) || i === arr.at(1) || i === arr.at(2)) boxes[i].classList.remove('blink');
-        });
+  //* remove class
+  winningCombinations.forEach((combination, i, arr) => {
+    combination.forEach((pos, i, arr) => {
+      boxes.map((_, i) => {
+        if (i === arr.at(0) || i === arr.at(1) || i === arr.at(2)) boxes[i].classList.remove('blink');
       });
     });
-    winner = false;
-    clickCounter = 0;
-    lastClick = '';
-    coordinates = ['', '-', '', '-', '', '-', '', '-', ''];
-    symbol.map(el => (el.textContent = ''));
+  });
+  winner = false;
+  clickCounter = 0;
+  lastClick = '';
+  coordinates = ['', '-', '', '-', '', '-', '', '-', ''];
+  symbol.map(el => (el.textContent = ''));
 
-    calcDisplayFirstMove();
-  }
+  calcDisplayFirstMove();
 }
 
 //! End of Functions *************************************************/
@@ -122,12 +120,11 @@ for (let i = 0; i < boxes.length; i++) {
         timer = true;
 
         checkWinner();
-        setTimeout(resetGame, 3000);
         if (!winner) {
           coordinates[randomPos] = symbol[randomPos].textContent = 'X';
           checkWinner();
-          setTimeout(resetGame, 3000);
         }
+        if ((!coordinates.includes('') && !coordinates.includes('-')) || winner) setTimeout(resetGame, 3000);
       }, 500);
     }
   });
