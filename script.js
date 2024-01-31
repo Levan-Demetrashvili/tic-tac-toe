@@ -2,13 +2,16 @@
 const containerApp = document.querySelector('.game-container');
 const boxes = Array.from(document.querySelectorAll('.boxes'));
 const symbol = Array.from(document.querySelectorAll('.symbol'));
+const btnsCloseModal = document.querySelectorAll('.btn');
+const overlay = document.querySelector('.overlay');
+const modalWindow = document.querySelector('.modal-window');
 //^ starting condition
 let randomPos;
 let coordinates = ['', '-', '', '-', '', '-', '', '-', ''];
 let timer = true;
 let clickCounter = 0;
-let xCounter = 0;
-let oCounter = 0;
+let pcCounter = 0;
+let humanCounter = 0;
 let lastClick;
 let winner;
 let winningCombinations = [
@@ -21,6 +24,16 @@ let winningCombinations = [
   [0, 4, 8],
   [2, 4, 6],
 ];
+let human, pc;
+btnsCloseModal.forEach(btn => {
+  btn.addEventListener('click', function () {
+    modalWindow.classList.add('hidden');
+    overlay.classList.add('hidden');
+    human = btn.textContent;
+    pc = human === 'X' ? 'O' : 'X';
+    console.log(`Human: ${human} PC : ${pc}`);
+  });
+});
 
 //^ Functions
 
@@ -29,7 +42,7 @@ function calcDisplayFirstMove() {
     randomPos = Math.trunc(Math.random() * 9);
   } while (coordinates[randomPos] === '-');
 
-  coordinates[randomPos] = symbol[randomPos].textContent = 'X';
+  coordinates[randomPos] = symbol[randomPos].textContent = pc;
 }
 
 function addClassAndWinner() {
@@ -40,28 +53,28 @@ function addClassAndWinner() {
 }
 function checkWinner() {
   winningCombinations.forEach((combination, i, arr) => {
-    xCounter = 0;
-    oCounter = 0;
+    pcCounter = 0;
+    humanCounter = 0;
     combination.forEach((pos, i, arr) => {
       //* add count
-      if (coordinates[pos] === 'X') xCounter++;
-      else if (coordinates[pos] === 'O') oCounter++;
+      if (coordinates[pos] === pc) pcCounter++;
+      else if (coordinates[pos] === human) humanCounter++;
 
       //* if X is one way to win
-      if (oCounter === 2) {
+      if (humanCounter === 2) {
         coordinates.map((el, i) => {
           if ((i === arr.at(0) || i === arr.at(1) || i === arr.at(2)) && (el === '' || el === '-')) randomPos = i;
         });
       }
-      if (xCounter === 2) {
+      if (pcCounter === 2) {
         coordinates.map((el, i) => {
           if ((i === arr.at(0) || i === arr.at(1) || i === arr.at(2)) && (el === '' || el === '-')) randomPos = i;
         });
       }
 
       //* if winner is  add class
-      if (xCounter === 3) addClassAndWinner.apply(arr);
-      else if (oCounter === 3) addClassAndWinner.call(arr);
+      if (pcCounter === 3) addClassAndWinner.apply(arr);
+      else if (humanCounter === 3) addClassAndWinner.call(arr);
     });
   });
 }
@@ -92,9 +105,9 @@ for (let i = 0; i < boxes.length; i++) {
   //* mouse down
   boxes[i].addEventListener('mousedown', function () {
     if ((coordinates[i] === '' || coordinates[i] === '-') && timer) {
-      lastClick = 'O';
+      lastClick = human;
       clickCounter++;
-      coordinates[i] = symbol[i].textContent = 'O';
+      coordinates[i] = symbol[i].textContent = human;
     } else {
       lastClick = '';
     }
@@ -102,7 +115,7 @@ for (let i = 0; i < boxes.length; i++) {
 
   //* mouse up
   boxes[i].addEventListener('mouseup', function () {
-    if (lastClick === 'O') {
+    if (lastClick === human) {
       timer = false;
       if (coordinates.includes('') || coordinates.includes('-')) {
         if (clickCounter < 3) {
@@ -121,7 +134,7 @@ for (let i = 0; i < boxes.length; i++) {
 
         checkWinner();
         if (!winner) {
-          coordinates[randomPos] = symbol[randomPos].textContent = 'X';
+          coordinates[randomPos] = symbol[randomPos].textContent = pc;
           checkWinner();
         }
         if ((!coordinates.includes('') && !coordinates.includes('-')) || winner) setTimeout(resetGame, 3000);
