@@ -6,6 +6,7 @@ const btnsCloseModal = document.querySelectorAll('.btn');
 const overlay = document.querySelector('.overlay');
 const modalWindow = document.querySelector('.modal-window');
 //^ starting condition
+let human, pc;
 let randomPos;
 let coordinates = ['', '-', '', '-', '', '-', '', '-', ''];
 let timer = true;
@@ -24,21 +25,12 @@ let winningCombinations = [
   [0, 4, 8],
   [2, 4, 6],
 ];
-let human, pc;
-btnsCloseModal.forEach(btn => {
-  btn.addEventListener('click', function () {
-    modalWindow.classList.add('hidden');
-    overlay.classList.add('hidden');
-    human = btn.textContent;
-    pc = human === 'X' ? 'O' : 'X';
-    console.log(`Human: ${human} PC : ${pc}`);
-  });
-});
 
 //^ Functions
 
 function calcDisplayFirstMove() {
   do {
+    console.log('hello');
     randomPos = Math.trunc(Math.random() * 9);
   } while (coordinates[randomPos] === '-');
 
@@ -50,7 +42,15 @@ function addClassAndWinner() {
   boxes.map((_, i) => {
     if (i === this.at(0) || i === this.at(1) || i === this.at(2)) boxes[i].classList.add('blink');
   });
+  coordinates.fill('Not empty!!');
+  console.log(coordinates);
 }
+function changePosition() {
+  coordinates.map((el, i) => {
+    if ((i === this.at(0) || i === this.at(1) || i === this.at(2)) && (el === '' || el === '-')) randomPos = i;
+  });
+}
+
 function checkWinner() {
   winningCombinations.forEach((combination, i, arr) => {
     pcCounter = 0;
@@ -60,16 +60,14 @@ function checkWinner() {
       if (coordinates[pos] === pc) pcCounter++;
       else if (coordinates[pos] === human) humanCounter++;
 
-      //* if X is one way to win
+      //* If pc is one way to win
       if (humanCounter === 2) {
-        coordinates.map((el, i) => {
-          if ((i === arr.at(0) || i === arr.at(1) || i === arr.at(2)) && (el === '' || el === '-')) randomPos = i;
-        });
+        console.log('human');
+        changePosition.apply(arr);
       }
       if (pcCounter === 2) {
-        coordinates.map((el, i) => {
-          if ((i === arr.at(0) || i === arr.at(1) || i === arr.at(2)) && (el === '' || el === '-')) randomPos = i;
-        });
+        console.log('pc');
+        changePosition.apply(arr);
       }
 
       //* if winner is  add class
@@ -98,7 +96,16 @@ function resetGame() {
 }
 
 //! End of Functions *************************************************/
-calcDisplayFirstMove();
+btnsCloseModal.forEach(btn => {
+  btn.addEventListener('click', function () {
+    modalWindow.classList.add('hidden');
+    overlay.classList.add('hidden');
+    human = btn.textContent;
+    pc = human === 'X' ? 'O' : 'X';
+    console.log(`Human: ${human} PC : ${pc}`);
+    calcDisplayFirstMove();
+  });
+});
 //* First move
 
 for (let i = 0; i < boxes.length; i++) {
